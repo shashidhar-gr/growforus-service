@@ -1,6 +1,6 @@
 var express = require('express');
-var assert = require('assert');
 var router = express.Router();
+var db = require('../utils/db');
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
@@ -8,7 +8,7 @@ router.get('/', function (req, res, next) {
 });
 
 router.post('/login', function (req, res, next) {
-  loginUser(req.db, req.body, function (err, result) {
+  loginUser(db.get(), req.body, function (err, result) {
     if (err) {
       res.json(result.status, { "success": false, result });
     }
@@ -24,8 +24,7 @@ router.post('/login', function (req, res, next) {
  * then data will be saved.
  ******/
 router.post('/register', function (req, res, next) {
-
-  registerUser(req.db, req.body, function (err, result) {
+  registerUser(db.get(), req.body, function (err, result) {
     if (err) {
       res.json(result.status, { "success": false, result });
     }
@@ -42,12 +41,10 @@ router.post('/register', function (req, res, next) {
  * Step1: Check for username and password in collection.
 *****/
 function loginUser(db, user, callback) {
-  console.log("In loginUser");
   //Using users collection.
   const collection = db.collection('users');
 
-  collection.find({ "username": user.username, "password": user.password }, function (err, results) {
-    console.log("In loginUser find");
+  collection.find({ "username": user.username, "password": user.password }).toArray(function (err, results) {
     if (err) {
       return callback(true, { "status": 500, "message": "something went wrong" });
     }
@@ -69,19 +66,15 @@ function loginUser(db, user, callback) {
  * Step2: If given username doesn't exists in collction, then insert the document. 
 *****/
 function registerUser(db, user, callback) {
-  console.log("In registerUser");
   //Using users collection.
   const collection = db.collection('users');
-  console.log('Continue!!');
-  console.log(user);
-  collection.find({ "username": user.username }, function (err, results) {
-    console.log("In registerUser find");
+
+  collection.find({ "username": user.username }).toArray(function (err, results) {
     if (err) {
       console.log(err);
       return callback(true, { "status": 500, "message": "something went wrong" });
     }
     else {
-      console.log("In not error");
       if (results.length > 0) {
         return callback(true, { "status": 500, "message": "username already exists." });
       }
