@@ -3,9 +3,9 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var mongo = require('mongodb');
-var monk = require('monk');
-var db = monk('localhost:27017/growforus');
+var mongoskin = require('mongoskin');
+
+var db = mongoskin.db("mongodb://growforus_dev_db:24XjILY2jAz4CgmW@cluster0-ebbj4.mongodb.net/test", {native_parser:true});
 
 /****
  * Loading different routers.

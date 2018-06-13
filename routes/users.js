@@ -24,6 +24,7 @@ router.post('/login', function (req, res, next) {
  * then data will be saved.
  ******/
 router.post('/register', function (req, res, next) {
+
   registerUser(req.db, req.body, function (err, result) {
     if (err) {
       res.json(result.status, { "success": false, result });
@@ -32,6 +33,7 @@ router.post('/register', function (req, res, next) {
       res.send(result.status, { "success": true, result });
     }
   });
+
 });
 
 /**** 
@@ -40,10 +42,12 @@ router.post('/register', function (req, res, next) {
  * Step1: Check for username and password in collection.
 *****/
 function loginUser(db, user, callback) {
+  console.log("In loginUser");
   //Using users collection.
   const collection = db.collection('users');
 
   collection.find({ "username": user.username, "password": user.password }, function (err, results) {
+    console.log("In loginUser find");
     if (err) {
       return callback(true, { "status": 500, "message": "something went wrong" });
     }
@@ -65,14 +69,19 @@ function loginUser(db, user, callback) {
  * Step2: If given username doesn't exists in collction, then insert the document. 
 *****/
 function registerUser(db, user, callback) {
+  console.log("In registerUser");
   //Using users collection.
   const collection = db.collection('users');
-
+  console.log('Continue!!');
+  console.log(user);
   collection.find({ "username": user.username }, function (err, results) {
+    console.log("In registerUser find");
     if (err) {
+      console.log(err);
       return callback(true, { "status": 500, "message": "something went wrong" });
     }
     else {
+      console.log("In not error");
       if (results.length > 0) {
         return callback(true, { "status": 500, "message": "username already exists." });
       }
