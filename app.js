@@ -5,7 +5,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var http = require('http');
 var db = require('./utils/db');
-
+//http://growforus-service-dev.us-west-2.elasticbeanstalk.com/users/login
+//http://192.168.43.239:3000/users/login
 /****
  * Loading different routers.
  ****/
